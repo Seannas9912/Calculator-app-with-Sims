@@ -19,6 +19,12 @@ function appendToDisplay(value) {
         display.value = value;
     } else if (currentValue === '0' && value === '.') {
         display.value = currentValue + value;
+    } else if (value === '.' ) {
+        let lastNumber = currentValue.split('/[+\-*/]').pop();
+        // Only add the decimal if the current number doesnt have one
+        if (!lastNumber.includes('.')) {
+            display.value = currentValue + value;
+        }
     } else {
         display.value = currentValue + value;
     }
@@ -30,8 +36,13 @@ function appendToDisplay(value) {
 
 function clearDisplay() {
     console.log('Display cleared');
+
+    display.value = '0';
+    justCalculated = false;
     
-    alert('Display cleared');
+    display.style.backgroundColor = '#f0f0f0';
+    setTimeout(() => {
+        display.style.backgroundColor = '';}, 150);
 }
 
 function deleteLast() {
@@ -45,8 +56,6 @@ function deleteLast() {
     } else {
         display.value = currentValue.slice(0, -1);
     }
-    
-    alert('Last character deleted');
 }
 
 function calculate() {
@@ -54,6 +63,31 @@ function calculate() {
     
     alert('Calculation performed');
 }
+
+document.addEventListener('keydown', function(event) {
+    console.log('Key pressed:', event.key);
+
+    if (event.key >= '0' && event.key <= '9') {
+        appendToDisplay(event.key);
+    } else if (event.key === '.') {
+        appendToDisplay('.');
+    } else if (event.key === '+') {
+        appendToDisplay('+');
+    } else if (event.key === '-') {
+        appendToDisplay('-');
+    } else if (event.key === '*') {
+        appendToDisplay('*');
+    } else if (event.key === '/') {
+        event.preventDefault();
+        appendToDisplay('/');
+    } else if (event.key === 'Enter' || event.key === '=') {
+        calculate();
+    } else if (event.key === 'Escape' || event.key === 'c' || event.key === 'C') {
+        clearDisplay();
+    } else if (event.key === 'Backspace' || event.key === 'Delete') {
+        deleteLast();
+    }
+})
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Calculator loaded');
